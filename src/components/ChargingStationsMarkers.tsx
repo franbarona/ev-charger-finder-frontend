@@ -1,11 +1,15 @@
-import type { ChargingStation } from '../types/types';
+import { useEffect } from 'react';
+import { useStations } from '../context/StationsContext';
 import ChargingStationMarker from './ChargingStationMarker';
 
-interface ChargingStationsMarkersProps {
-  stations: ChargingStation[];
-}
 
-const ChargingStationsMarkers: React.FC<ChargingStationsMarkersProps> = ({ stations }) => {
+const ChargingStationsMarkers: React.FC = () => {
+  const { stations } = useStations();
+
+  useEffect(() => {
+    console.log("stations se actualizó:", stations);
+    // aquí puedes ejecutar lógica adicional
+  }, [stations]); // 👈 se dispara cada vez que cambia el array
   return (
     <>
       {stations.map((station) => {

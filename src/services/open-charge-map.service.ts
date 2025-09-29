@@ -1,15 +1,10 @@
 import chargersData from '../data/chargersdata.json';
-import type { ChargingStation } from "../types/types";
+import { EnumStationStatus, type ChargingStation, type MapBounds } from "../types/types";
 
-export const fetchChargingStations = async (
-  lat: number,
-  lng: number,
-  distance = 10
-): Promise<ChargingStation[]> => {
-  const response = await fetch(
-    `https://api.openchargemap.io/v3/poi/?output=json&latitude=${lat}&longitude=${lng}&distance=${distance}&distanceunit=KM&maxresults=20&compact=true&verbose=false&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`
-  );
-
+export const fetchChargingStations = async (lat: number, lng: number, distance = 10): Promise<ChargingStation[]> => {
+  console.log("Entro fetchChargingStations");
+  const url = `https://api.openchargemap.io/v3/poi/?output=json&latitude=${lat}&longitude=${lng}&distance=${distance}&distanceunit=KM&maxresults=100&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`;
+  const response = await fetch(url);
   if (!response.ok) {
     throw new Error('Error al consultar OpenChargeMap');
   }
@@ -18,10 +13,18 @@ export const fetchChargingStations = async (
   return data;
 };
 
-export const searchWithCoordinates = async (lat: number, lng: number) => {
-  const response = await fetch(
-    `https://api.openchargemap.io/v3/poi/?output=json&latitude=${lat}&longitude=${lng}&distance=10&distanceunit=KM&maxresults=20&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`
-  );
+
+export const fetchCoordinatesByQuery = async (query: string): Promise<{ lat: string, lon: string }[]> => {
+  console.log("Entro fetchCoordinatesByQuery");
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+  const response = await fetch(url);
+  return response.json();
+}
+
+
+export const searchWithCoordinates = async (lat: number, lng: number, bounds: MapBounds) => {
+  const url = `https://api.openchargemap.io/v3/poi/?output=json&boundingbox=true&minlatitude=${bounds?.minLat}&maxlatitude=${bounds?.maxLat}&minlongitude=${bounds?.minLng}&maxlongitude=${bounds?.maxLng}&latitude=${lat}&longitude=${lng}&maxresults=100&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`;
+  const response = await fetch(url);
   return response.json();
 };
 
@@ -63,3 +66,11 @@ const toRad = (deg: number): number => {
   return (deg * Math.PI) / 180;
 }
 
+export const getStationStatus = (station: ChargingStation) => {
+  const statusStatus: EnumStationStatus =
+    station.Connections.every(connection => connection.StatusTypeID === 10 || connection.StatusTypeID === 50) ? EnumStationStatus.Available
+      : station.Connections.every(connection => connection.StatusTypeID !== 10 && connection.StatusTypeID !== 50) ? EnumStationStatus.Inoperative
+        : EnumStationStatus.PartiallyAvailable;
+
+  return statusStatus;
+}

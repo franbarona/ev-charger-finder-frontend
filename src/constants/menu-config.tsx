@@ -4,20 +4,20 @@ import { TbMapPinBolt } from "react-icons/tb";
 
 const menuConfig = [
   {
-    label: 'Stations',
+    label: 'About',
     to: '/',
     icon: <TbMapPinBolt />
   },
-  {
-    label: 'Operators',
-    to: '/operators',
-    icon: <BsHeadset />,
-  },
-  {
-    label: 'Categories',
-    to: '/categories',
-    icon: <GrList />,
-  },
+  // {
+  //   label: 'Operators',
+  //   to: '/operators',
+  //   icon: <BsHeadset />,
+  // },
+  // {
+  //   label: 'Categories',
+  //   to: '/categories',
+  //   icon: <GrList />,
+  // },
 ];
 
 export default menuConfig;

@@ -27,7 +27,7 @@ let idCounter = 0;
 export const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
 
-  const addAlert = useCallback(({ type, message, duration = 150000 }: AddAlertParams) => {
+  const addAlert = useCallback(({ type, message, duration = 5000 }: AddAlertParams) => {
     const id = idCounter++;
     const newAlert = { id, type, message };
     setAlerts((prev) => [...prev, newAlert]);

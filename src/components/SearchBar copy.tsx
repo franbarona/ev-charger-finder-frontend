@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useAlert } from '../context/AlertContext';
 import { GrClose, GrSearch } from 'react-icons/gr';
 import { useMapPosition } from '../context/MapPositionContext';
-import { LuListFilter } from 'react-icons/lu';
-import { fetchChargingStations, fetchCoordinatesByQuery } from '../services/open-charge-map.service';
-import { useStations } from '../context/StationsContext';
 
 interface SearchBarProps {
   initialQuery?: string;
@@ -15,7 +12,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
   const [loading, setLoading] = useState(false);
   const { setPosition } = useMapPosition();
   const { addAlert } = useAlert();
-  const { setStations } = useStations();
 
   useEffect(() => {
     setQuery(initialQuery);
@@ -26,11 +22,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
     if (!query) return;
 
     try {
-      const data = await fetchCoordinatesByQuery(query)
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+      );
+      const data = await response.json();
+
       if (data.length > 0) {
         const { lat, lon } = data[0];
+        // onCoordinatesFound({ lat: parseFloat(lat), lng: parseFloat(lon) }, query);
         setPosition({ lat: parseFloat(lat), lng: parseFloat(lon) });
-        handleSearchByCoordinatesFound({ lat: parseFloat(lat), lng: parseFloat(lon) }, query);
       } else {
         addAlert({ type: 'info', message: `No location found` });
       }
@@ -41,32 +41,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
     }
   };
 
-  const handleSearchByCoordinatesFound = async (coords: { lat: number; lng: number }, searchInput?: string) => {
-    try {
-      const stations = await fetchChargingStations(coords.lat, coords.lng);
-      setStations(stations);
-      addAlert({ type: 'success', message: `${stations?.length} charging stations found near ${searchInput}` });
-    } catch (error) {
-      addAlert({ type: 'error', message: `Error getting charging stations: ${error}` });
-    }
-  };
-
   return (
     <form
       onSubmit={handleSearch}
     >
-      <div className="flex justify-center items-center gap-3 overflow-hidden w-full border-1 border-gray-300 rounded-full  pl-4">
-        <button
-          type='submit'
-          disabled={loading}
-          className={`cursor-pointer text-xl text-gray-700 hover:text-emerald-700`}
-        >
-          <GrSearch />
-        </button>
+      <div className="flex justify-center items-center gap-3 rounded-full shadow-lg overflow-hidden w-full bg-white border-1 border-gray-300">
         <input
           type="text"
           placeholder="Search name of city, town or address..."
-          className="w-full outline-none bg-transparent text-gray-600 text-base font-medium"
+          className="w-full outline-none bg-transparent text-gray-600 text-base font-medium ml-6"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
@@ -77,20 +60,20 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
               type='button'
               disabled={loading}
               onClick={() => setQuery('')}
-              className='cursor-pointer text-gray-700 text-sm hover:text-emerald-700 px-2'
+              className='cursor-pointer text-gray-700 text-sm hover:text-emerald-700 px-4 py-3'
             >
               <GrClose />
             </button>
           }
+          <div className='w-[1px] h-[30px] m-auto mx-0 bg-gray-300' />
+          <button
+            type='submit'
+            disabled={loading}
+            className={`cursor-pointer px-6 py-3 text-xl text-gray-700 hover:text-emerald-700`}
+          >
+            <GrSearch />
+          </button>
         </div>
-        <button
-          type='button'
-          disabled={loading}
-          className={`cursor-pointer text-xl text-gray-700 bg-white py-1 px-3 hover:bg-emerald-700/80 hover:text-white flex gap-2 justify-center items-center`}
-        >
-          Filters
-          <LuListFilter />
-        </button>
       </div>
     </form>
   );

@@ -10,8 +10,8 @@ const ButtonHideList: React.FC<ButtonHideListProps> = ({ action, isSidebarExpand
   return (
     <button
       className={`
-                cursor-pointer absolute bottom-1/8 -right-7 bg-gray-100 border-1 border-gray-300
-                py-4 px-1.5 rounded-r-xl shadow-2xl text-xl`}
+                cursor-pointer absolute bottom-1/8 -right-8 bg-emerald-700/90 border-2 border-gray-200
+                py-4 pl-1.5 pr-1 rounded-r-xl shadow-2xl text-2xl text-white`}
       onClick={action}
     >
       <MdKeyboardArrowLeft className={`transition-all duration-600 easy-in-out ${arrowRotation}`} />

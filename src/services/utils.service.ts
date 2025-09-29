@@ -1,16 +1,17 @@
-export const getStationStatusColor = (statusTypeID: number | undefined) => {
-  if (!statusTypeID) return 'bg-rose-500';
+import { EnumStationStatus } from "../types/types";
+
+export const getStationStatusColor = (statusTypeID: EnumStationStatus) => {
 
   switch (statusTypeID) {
-    case 10:
-    case 50:
-      return 'bg-emerald-50/60';
+    case EnumStationStatus.Inoperative:
+      return 'border-red-700';
 
-    case 150:
-      return 'bg-gray-50';
+    case EnumStationStatus.PartiallyAvailable:
+      return 'border-yellow-700';
 
+    case EnumStationStatus.Available:
     default:
-      return 'bg-rose-50/60';
+      return 'border-emerald-800';
   }
 }
 
