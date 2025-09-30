@@ -5,7 +5,7 @@ import SearchBar from "./SearchBar";
 
 const NavLogo = () => {
   return (
-    <div className={`flex justify-start items-center font-bold font-outfit text-2xl gap-2`}>
+    <div className={`hidden xl:flex justify-start items-center font-bold font-outfit text-2xl gap-2`}>
       <FaMapMarkerAlt className="text-emerald-700 text-2xl" />
       <span>Charging</span>
     </div>
@@ -14,7 +14,7 @@ const NavLogo = () => {
 
 const NavLinks = () => {
   return (
-    <div className={`flex gap-8 items-center text-lg font-medium`}>
+    <div className={`hidden xl:flex gap-8 items-center text-lg font-medium`}>
       {menuConfig.map(({ to, label, icon }) => {
         return (
           <NavLink
@@ -37,13 +37,15 @@ const NavLinks = () => {
 
 const Navbar = () => {
   return (
-    <nav className={`flex justify-between items-center py-2 px-10`}>
-      <NavLogo />
-      <div className="flex-1 max-w-lg mx-10">
-      <SearchBar/>
-      </div>
-      <NavLinks />
-    </nav>
+    <div className="absolute shadow-2xl z-50 w-[90vw] md:w-[50vw] xl:w-[80vw] max-w-5xl mx-auto top-2 left-0 right-0 rounded-2xl xl:border-b-1 border-gray-300 xl:bg-[rgba(255,255,255,0.3)] xl:backdrop-blur-2xl">
+      <nav className={`flex justify-between items-center xl:py-2 xl:px-10 `}>
+        <NavLogo />
+        <div className="flex-1 xl:max-w-xl xl:mx-10">
+          <SearchBar />
+        </div>
+        <NavLinks />
+      </nav>
+    </div>
   );
 };
 

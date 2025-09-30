@@ -1,9 +1,8 @@
 import chargersData from '../data/chargersdata.json';
 import { EnumStationStatus, type ChargingStation, type MapBounds } from "../types/types";
 
-export const fetchChargingStations = async (lat: number, lng: number, distance = 10): Promise<ChargingStation[]> => {
-  console.log("Entro fetchChargingStations");
-  const url = `https://api.openchargemap.io/v3/poi/?output=json&latitude=${lat}&longitude=${lng}&distance=${distance}&distanceunit=KM&maxresults=100&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`;
+export const fetchChargingStations = async (lat: number, lng: number, distance = 2.5): Promise<ChargingStation[]> => {
+  const url = `https://api.openchargemap.io/v3/poi/?output=json&latitude=${lat}&longitude=${lng}&distance=${distance}&distanceunit=KM&maxresults=500&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`;
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error('Error al consultar OpenChargeMap');
@@ -15,15 +14,14 @@ export const fetchChargingStations = async (lat: number, lng: number, distance =
 
 
 export const fetchCoordinatesByQuery = async (query: string): Promise<{ lat: string, lon: string }[]> => {
-  console.log("Entro fetchCoordinatesByQuery");
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
   const response = await fetch(url);
   return response.json();
 }
 
 
-export const searchWithCoordinates = async (lat: number, lng: number, bounds: MapBounds) => {
-  const url = `https://api.openchargemap.io/v3/poi/?output=json&boundingbox=true&minlatitude=${bounds?.minLat}&maxlatitude=${bounds?.maxLat}&minlongitude=${bounds?.minLng}&maxlongitude=${bounds?.maxLng}&latitude=${lat}&longitude=${lng}&maxresults=100&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`;
+export const searchStationsInBounds = async (bounds: MapBounds) => {
+  const url = `https://api.openchargemap.io/v3/poi/?output=json&boundingbox=(${bounds.minLat},${bounds.minLng}),(${bounds.maxLat},${bounds.maxLng})&maxresults=500&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`;
   const response = await fetch(url);
   return response.json();
 };

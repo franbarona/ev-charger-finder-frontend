@@ -15,7 +15,7 @@ const ZoomListener: React.FC<ZoomListenerProps> = ({ onZoomChange }) => {
     };
 
     map.on('zoomend', handleZoom);
-    handleZoom(); // Inicializa con el zoom actual
+    // handleZoom(); // Inicializa con el zoom actual
 
     return () => {
       map.off('zoomend', handleZoom);

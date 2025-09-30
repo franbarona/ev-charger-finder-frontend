@@ -1,12 +1,11 @@
 import { MapContainer, TileLayer, ZoomControl, useMapEvents } from 'react-leaflet';
 import ChargingStationsMarkers from './ChargingStationsMarkers';
 import MapCenterUpdater from './MapCenterUpdater';
-import MapCenterTracker from './MapCenterTracker';
 import { useBounds } from '../context/BoundContext';
 import { useMapPosition } from '../context/MapPositionContext';
-import { useEffect } from 'react';
-import CustomMarker from './CustomMarker';
-import ZoomListener from './ZoomListener';
+import MyMapInitializer from './MapInitializer';
+import { useMapZoom } from '../context/MapZoomContext';
+import { ConditionalZoomControls } from './ConditionalZoomControls';
 
 interface MapViewProps {
   initialZoom?: number;
@@ -15,13 +14,18 @@ interface MapViewProps {
 
 const MapView: React.FC<MapViewProps> = ({ initialZoom = 13, setMapCoords }) => {
   const { position } = useMapPosition();
-  const { bounds, setBounds } = useBounds();
+  const { setBounds } = useBounds();
+  const { setZoom } = useMapZoom();
 
   const MapEvents = () => {
     const map = useMapEvents({
+      zoom: () => {
+        setZoom(map.getZoom());
+      },
       moveend: () => {
         const bounds = map.getBounds();
-        console.log('Map bounds changed:', bounds);
+        const center = map.getCenter();
+        setMapCoords({ lat: center.lat, lng: center.lng });
         const southWest = bounds.getSouthWest();
         const northEast = bounds.getNorthEast();
 
@@ -46,17 +50,11 @@ const MapView: React.FC<MapViewProps> = ({ initialZoom = 13, setMapCoords }) => 
           url={`https://maps.geoapify.com/v1/tile/klokantech-basic/{z}/{x}/{y}.png?apiKey=${import.meta.env.VITE_GEOAPIFY_API_KEY}`}
         />
 
+        <MyMapInitializer />
         <ChargingStationsMarkers />
-        <ZoomControl position="topright" />
+        {/* <ZoomControl position="topright" /> */}
+        <ConditionalZoomControls />
         <MapEvents />
-        <ZoomListener onZoomChange={(zoom) => console.log('Zoom changed:', zoom)} />
-        <CustomMarker position={{ lat: bounds.maxLat, lng: bounds.minLng }} />
-        <CustomMarker position={{ lat: bounds.maxLat, lng: bounds.maxLng }} />
-        <CustomMarker position={{ lat: bounds.minLat, lng: bounds.minLng }} />
-        <CustomMarker position={{ lat: bounds.minLat, lng: bounds.maxLng }} />
-        <MapCenterTracker initialCoords={position} onCenterChange={(lat, lng) => {
-          setMapCoords({ lat, lng });
-        }} />
       </MapContainer>
     </div>
   );

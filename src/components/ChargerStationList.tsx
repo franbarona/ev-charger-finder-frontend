@@ -13,7 +13,7 @@ const ChargerStationList: React.FC<ChargerStationListProps> = ({ stations }) => 
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <ul className='pl-2 my-4 overflow-auto pb-4 z-10'>
+    <ul className='pl-2 my-4 overflow-auto pb-4 z-10 w-full'>
       <p className='font-medium text-xl pl-4 pb-1'>Search result: <span className='text-base font-normal'>{stations.length} stations found</span></p>
       {
         stations.map((station) => {

@@ -1,5 +1,5 @@
-import { BsHeadset } from "react-icons/bs";
-import { GrList } from 'react-icons/gr';
+// import { BsHeadset } from "react-icons/bs";
+// import { GrList } from 'react-icons/gr';
 import { TbMapPinBolt } from "react-icons/tb";
 
 const menuConfig = [

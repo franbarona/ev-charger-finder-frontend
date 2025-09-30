@@ -9,8 +9,7 @@ const ButtonHideList: React.FC<ButtonHideListProps> = ({ action, isSidebarExpand
   const arrowRotation = isSidebarExpanded ? "" : "rotate-180";
   return (
     <button
-      className={`
-                cursor-pointer absolute bottom-1/8 -right-8 bg-emerald-700/90 border-2 border-gray-200
+      className={`cursor-pointer bg-emerald-700/90 border-2 border-gray-200
                 py-4 pl-1.5 pr-1 rounded-r-xl shadow-2xl text-2xl text-white`}
       onClick={action}
     >

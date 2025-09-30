@@ -91,7 +91,7 @@ const ChargingStationMarker: React.FC<ChargingStationMarkerProps> = ({ station }
             <div className='scrollbar-hide flex gap-2 aspect-square max-h-[150px] w-[95%] mt-2'>
               {
                 station.Connections.map((connection) => (
-                  <ConnectionChargerCard connection={connection} />
+                  <ConnectionChargerCard key={connection.ID} connection={connection} />
                 ))
               }
             </div>

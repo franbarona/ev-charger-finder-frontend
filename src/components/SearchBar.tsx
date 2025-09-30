@@ -5,6 +5,7 @@ import { useMapPosition } from '../context/MapPositionContext';
 import { LuListFilter } from 'react-icons/lu';
 import { fetchChargingStations, fetchCoordinatesByQuery } from '../services/open-charge-map.service';
 import { useStations } from '../context/StationsContext';
+import { useLoading } from '../context/LoadingContext';
 
 interface SearchBarProps {
   initialQuery?: string;
@@ -16,6 +17,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
   const { setPosition } = useMapPosition();
   const { addAlert } = useAlert();
   const { setStations } = useStations();
+  const { wrapPromise } = useLoading();
 
   useEffect(() => {
     setQuery(initialQuery);
@@ -43,7 +45,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
 
   const handleSearchByCoordinatesFound = async (coords: { lat: number; lng: number }, searchInput?: string) => {
     try {
-      const stations = await fetchChargingStations(coords.lat, coords.lng);
+      const stations = await wrapPromise(fetchChargingStations(coords.lat, coords.lng));
       setStations(stations);
       addAlert({ type: 'success', message: `${stations?.length} charging stations found near ${searchInput}` });
     } catch (error) {
@@ -55,7 +57,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
     <form
       onSubmit={handleSearch}
     >
-      <div className="flex justify-center items-center gap-3 overflow-hidden w-full border-1 border-gray-300 rounded-full  pl-4">
+      <div className="flex justify-center items-center gap-3 overflow-hidden w-full  border-1 frosted-bg border-gray-300 rounded-full pl-4">
         <button
           type='submit'
           disabled={loading}
@@ -66,7 +68,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
         <input
           type="text"
           placeholder="Search name of city, town or address..."
-          className="w-full outline-none bg-transparent text-gray-600 text-base font-medium"
+          className="w-full outline-none bg-transparent text-gray-600 font-medium text-sm xl:text-base"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
@@ -86,9 +88,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
         <button
           type='button'
           disabled={loading}
-          className={`cursor-pointer text-xl text-gray-700 bg-white py-1 px-3 hover:bg-emerald-700/80 hover:text-white flex gap-2 justify-center items-center`}
+          className={`cursor-pointer text-xl text-gray-700 bg-white p-3 xl:py-1 xl:px-2 hover:bg-emerald-700/80 hover:text-white flex gap-2 justify-center items-center`}
         >
-          Filters
+          <span className='hidden xl:block'>Filters</span>
           <LuListFilter />
         </button>
       </div>

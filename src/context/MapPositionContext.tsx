@@ -7,7 +7,7 @@ import {
   useContext,
 } from "react";
 import type { Coordinates } from "../types/types";
-import { initialCoords } from "../constants/constants";
+import { INITIAL_COORDS } from "../constants/constants";
 
 interface MapPositionContextType {
   position: Coordinates;
@@ -17,7 +17,7 @@ interface MapPositionContextType {
 const MapPositionContext = createContext<MapPositionContextType | undefined>(undefined);
 
 export const MapPositionProvider = ({ children }: { children: ReactNode }) => {
-  const [position, setPosition] = useState<Coordinates>(initialCoords);
+  const [position, setPosition] = useState<Coordinates>(INITIAL_COORDS);
 
   return (
     <MapPositionContext.Provider value={{ position, setPosition }}>
