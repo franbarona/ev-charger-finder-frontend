@@ -46,14 +46,14 @@ const SearchByBounds: React.FC<SearchByBoundsProps> = ({ centerMapPosition }) =>
           ${(zoom > MIN_ZOOM_TO_SEARCH_IN_AREA && (!stations.length || distance > 1.5 /*|| zoomChanged*/)) ? 'animate-fade-in' : 'animate-fade-out'}
           flex gap-2 justify-center items-center text-base absolute top-15
           xl:top-20 left-1/2 -translate-x-1/2 bg-white border-1 border-gray-300
-          rounded-full px-6 py-1 shadow-lg z-500 cursor-pointer
+          rounded-full px-6 py-1 shadow-lg z-1 cursor-pointer text-gray-600
           `}
       onClick={() => {
         handleSearchInMapBounds();
       }}
     >
-      <PiMapPinArea className='text-gray-600' />
-      <span className='outline-none bg-transparent text-gray-600 font-medium text-sm xl:text-base'>{`Explore this area`}</span>
+      <PiMapPinArea className='text-xl' />
+      <span className='outline-none bg-transparent font-medium text-sm xl:text-base'>{`Explore this area`}</span>
     </div>
   );
 };

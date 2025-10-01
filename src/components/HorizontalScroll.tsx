@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import IconActionButton from './ui/IconActionButton';
+import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 
 interface HorizontalScrollProps {
   children: React.ReactNode;
@@ -50,12 +51,10 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({ children }) => {
       {/* Button left */}
       {
         canScrollLeft &&
-        <button
-          onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-xl border-1 border-gray-300 cursor-pointer"
-        >
-          <IoIosArrowBack />
-        </button>}
+        <div className='absolute -left-5 top-1/2 -translate-y-1/2 z-10'>
+          <IconActionButton icon={LuChevronLeft} action={() => scroll('left')} iconSize='text-xl' bgClass='bg-gray-300/50' />
+        </div>
+      }
 
       {/* Scrollable content */}
       <div
@@ -68,12 +67,10 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({ children }) => {
       {/* Button right */}
       {
         canScrollRight &&
-        <button
-          onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-xl border-1 border-gray-300 cursor-pointer"
-        >
-          <IoIosArrowForward />
-        </button>}
+        <div className='absolute -right-5 top-1/2 -translate-y-1/2 z-10'>
+          <IconActionButton icon={LuChevronRight} action={() => scroll('right')} iconSize='text-xl' bgClass='bg-gray-300/50' />
+        </div>
+      }
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import chargersData from '../data/chargersdata.json';
 import { EnumStationStatus, type ChargingStation, type MapBounds } from "../types/types";
+import { type Option } from '../types/types';
 
 export const fetchChargingStations = async (lat: number, lng: number, distance = 2.5): Promise<ChargingStation[]> => {
   const url = `https://api.openchargemap.io/v3/poi/?output=json&latitude=${lat}&longitude=${lng}&distance=${distance}&distanceunit=KM&maxresults=500&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`;
@@ -28,6 +29,10 @@ export const searchStationsInBounds = async (bounds: MapBounds) => {
 
 export const getOperatorData = (operatorID: number) => {
   return chargersData.Operators.find(operator => operator.ID === operatorID);
+}
+
+export const getUsageType = (usageTypeID: number) => {
+  return chargersData.UsageTypes.find(usage => usage.ID === usageTypeID);
 }
 
 export const getConnectionTypeData = (connectionTypeID?: number) => {
@@ -71,4 +76,12 @@ export const getStationStatus = (station: ChargingStation) => {
         : EnumStationStatus.PartiallyAvailable;
 
   return statusStatus;
+}
+
+export const getUsageTypeDropdownOptions = (): Option[] => {
+  const usageTypes = chargersData.UsageTypes;
+  return usageTypes.map(usageType => ({
+    label: usageType.Title,
+    value: usageType.ID
+  }));
 }

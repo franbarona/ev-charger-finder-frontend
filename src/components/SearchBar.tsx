@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useAlert } from '../context/AlertContext';
-import { GrClose, GrSearch } from 'react-icons/gr';
 import { useMapPosition } from '../context/MapPositionContext';
-import { LuListFilter } from 'react-icons/lu';
+import { LuListFilter, LuSearch, LuX } from 'react-icons/lu';
 import { fetchChargingStations, fetchCoordinatesByQuery } from '../services/open-charge-map.service';
 import { useStations } from '../context/StationsContext';
 import { useLoading } from '../context/LoadingContext';
+import { useModal } from '../context/ModalContext';
 
 interface SearchBarProps {
   initialQuery?: string;
@@ -18,6 +18,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
   const { addAlert } = useAlert();
   const { setStations } = useStations();
   const { wrapPromise } = useLoading();
+  const { isModalOpen, setIsModalOpen } = useModal();
 
   useEffect(() => {
     setQuery(initialQuery);
@@ -57,13 +58,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
     <form
       onSubmit={handleSearch}
     >
-      <div className="flex justify-center items-center gap-3 overflow-hidden w-full  border-1 frosted-bg border-gray-300 rounded-full pl-4">
+      <div className="flex justify-center items-center gap-3 w-full frosted-bg border-gray-300 border-1 rounded-xl pl-4">
         <button
           type='submit'
           disabled={loading}
           className={`cursor-pointer text-xl text-gray-700 hover:text-emerald-700`}
         >
-          <GrSearch />
+          <LuSearch />
         </button>
         <input
           type="text"
@@ -81,17 +82,22 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
               onClick={() => setQuery('')}
               className='cursor-pointer text-gray-700 text-sm hover:text-emerald-700 px-2'
             >
-              <GrClose />
+              <LuX />
             </button>
           }
         </div>
         <button
           type='button'
           disabled={loading}
-          className={`cursor-pointer text-xl text-gray-700 bg-white p-3 xl:py-1 xl:px-2 hover:bg-emerald-700/80 hover:text-white flex gap-2 justify-center items-center`}
+          onClick={() => setIsModalOpen(!isModalOpen)}
+          className={`
+            cursor-pointer text-gray-700 font-medium bg-white p-3 xl:py-1 xl:px-2 
+            hover:bg-emerald-700/90 hover:text-white rounded-r-xl
+            flex gap-2 justify-center items-center border-l-1 border-gray-300
+            `}
         >
+          <LuListFilter className='text-xl' />
           <span className='hidden xl:block'>Filters</span>
-          <LuListFilter />
         </button>
       </div>
     </form>
