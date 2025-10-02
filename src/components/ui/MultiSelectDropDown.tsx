@@ -1,30 +1,43 @@
-import React, { useState } from 'react';
-import Select, { type MultiValue } from 'react-select';
+// components/MultiSelectDropDown.tsx
+
+import React from 'react';
+import Select from 'react-select';
 import { type Option } from '../../types/types';
 
-// Definimos las props que acepta el componente
 interface MultiSelectDropDownProps {
+  name: string;
+  selectedValues: string[];  // <— sigue usando string[] externamente
   options: Option[];
+  onChange: (selected: string[]) => void;
 }
 
-const MultiSelectDropDown: React.FC<MultiSelectDropDownProps> = ({ options }) => {
-  const [selectedOptions, setSelectedOptions] = useState<MultiValue<Option>>([]);
+const MultiSelectDropDown: React.FC<MultiSelectDropDownProps> = ({
+  name,
+  selectedValues,
+  options,
+  onChange
+}) => {
+  // Convertimos los string[] a Option[] para react-select
+  const selectedOptions = options.filter(option =>
+    selectedValues.includes(option.value)
+  );
 
-  // Función para manejar el cambio de selección
-  const handleChange = (selected: MultiValue<Option>) => {
-    setSelectedOptions(selected);
+  // react-select devuelve Option[], lo convertimos de nuevo a string[]
+  const handleChange = (selected: readonly Option[] | null) => {
+    const values = [...selected?.map(option => option.value) || []];
+    onChange(values);
   };
 
   return (
     <div>
       <Select
-        isMulti // Habilita la selección múltiple
+        isMulti
+        name={name}
         options={options}
-        value={selectedOptions}
+        value={selectedOptions} // <-- Option[]
         onChange={handleChange}
-        getOptionLabel={(e) => e.label} // Muestra el label de cada opción
-        getOptionValue={(e) => e.value} // Muestra el value de cada opción
-        closeMenuOnSelect={false} // Evita que el menú se cierre al seleccionar
+        closeMenuOnSelect={false}
+        placeholder="Selecciona opciones..."
       />
     </div>
   );

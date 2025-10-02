@@ -1,29 +1,31 @@
 import chargersData from '../data/chargersdata.json';
-import { EnumStationStatus, type ChargingStation, type MapBounds } from "../types/types";
+import { EnumStationStatus, type ChargingStation, type Coordinates, type MapBounds, type StationsSearchFilters } from "../types/types";
 import { type Option } from '../types/types';
 
-export const fetchChargingStations = async (lat: number, lng: number, distance = 2.5): Promise<ChargingStation[]> => {
-  const url = `https://api.openchargemap.io/v3/poi/?output=json&latitude=${lat}&longitude=${lng}&distance=${distance}&distanceunit=KM&maxresults=500&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Error al consultar OpenChargeMap');
-  }
-
-  const data = await response.json();
-  return data;
-};
-
+const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org/search?format=json';
+const OPENCHARGEMAP_BASE_URL = `https://api.openchargemap.io/v3/poi/?output=json&maxresults=500&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`;
+const DEFAULT_DISTANCE = 2.5;
 
 export const fetchCoordinatesByQuery = async (query: string): Promise<{ lat: string, lon: string }[]> => {
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`
+  const url = `${NOMINATIM_BASE_URL}&q=${encodeURIComponent(query)}`
   const response = await fetch(url);
   return response.json();
 }
 
-
-export const searchStationsInBounds = async (bounds: MapBounds) => {
-  const url = `https://api.openchargemap.io/v3/poi/?output=json&boundingbox=(${bounds.minLat},${bounds.minLng}),(${bounds.maxLat},${bounds.maxLng})&maxresults=500&key=${import.meta.env.VITE_OPENCHARGEMAP_API_KEY}`;
+export const fetchStationsByCoords = async (coords: Coordinates, filters?: StationsSearchFilters): Promise<ChargingStation[]> => {
+  let url = `${OPENCHARGEMAP_BASE_URL}&latitude=${coords.lat}&longitude=${coords.lng}&distance=${DEFAULT_DISTANCE}&distanceunit=KM`;
+  url += mapUrlFilters(filters);
   const response = await fetch(url);
+  if (!response.ok) throw new Error('Error al consultar OpenChargeMap');
+  const data = await response.json();
+  return data;
+};
+
+export const fetchStationsInBounds = async (bounds: MapBounds, filters?: StationsSearchFilters) => {
+  let url = `${OPENCHARGEMAP_BASE_URL}&boundingbox=(${bounds.minLat},${bounds.minLng}),(${bounds.maxLat},${bounds.maxLng})`;
+  url += mapUrlFilters(filters);
+  const response = await fetch(url);
+  if (!response.ok) throw new Error('Error al consultar OpenChargeMap');
   return response.json();
 };
 
@@ -43,6 +45,15 @@ export const getConnectionTypeData = (connectionTypeID?: number) => {
 export const getStatusTypeData = (statusTypeID?: number) => {
   if (!statusTypeID) return;
   return chargersData.StatusTypes.find(stateType => stateType.ID === statusTypeID);
+}
+
+const mapUrlFilters = (filters?: StationsSearchFilters): string => {
+  if (!filters) return '';
+  let urlFilters = '';
+  if (filters.usage) {
+    urlFilters += `&usageTypeId=${filters.usage}`
+  }
+  return urlFilters;
 }
 
 /**
@@ -82,6 +93,6 @@ export const getUsageTypeDropdownOptions = (): Option[] => {
   const usageTypes = chargersData.UsageTypes;
   return usageTypes.map(usageType => ({
     label: usageType.Title,
-    value: usageType.ID
+    value: usageType.ID.toString()
   }));
 }

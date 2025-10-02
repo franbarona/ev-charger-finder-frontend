@@ -79,5 +79,10 @@ export interface MapBounds {
 
 export interface Option {
   label: string;
-  value: string | number;
+  value: string;
+}
+
+
+export interface StationsSearchFilters {
+  usage: string[];
 }

@@ -1,39 +1,50 @@
-// src/components/FilterForm.tsx
-
 import React, { useState } from "react";
 import MultiSelectDropDown from "./ui/MultiSelectDropDown";
 import { getUsageTypeDropdownOptions } from "../services/open-charge-map.service";
+import type { StationsSearchFilters } from "../types/types";
 
 type FilterFormProps = {
-  onFilterChange: (filters: { usage: string[] }) => void;
+  onChangeFilters: (stationsSearchFilters: StationsSearchFilters) => void;
+  settedData?: StationsSearchFilters | null;
 };
 
-const FilterForm: React.FC<FilterFormProps> = ({ onFilterChange }) => {
-  const [selectedUsage, setSelectedUsage] = useState<string[]>([]);
+const FilterForm: React.FC<FilterFormProps> = ({ onChangeFilters, settedData }) => {
 
-  const handleUsageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setSelectedUsage(selected);
-    onFilterChange({ usage: selected });
-  };
+  const [formData, setFormData] = useState({
+    usage: settedData?.usage || [],
+  });
 
-  const handleFilters = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(e)
+  // const resetForm = () => {
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     usage: [],
+  //   }));
+  // };
 
-    // &usagetypeid=1
+  const handleChangeSelectedUsages = (value: string[]) => {
+    setFormData(prev => ({
+      ...prev,
+      usage: value,
+    }));
   }
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const filters: StationsSearchFilters = {
+      usage: formData.usage,
+    };
+    // resetForm();
+    onChangeFilters(filters);
+  };
+
   return (
-    <form className="p-4 rounded shadow space-y-4" onSubmit={handleFilters}>
+    <form className="p-4 rounded shadow space-y-4" onSubmit={handleSubmit}>
       <div>
         <label htmlFor="usage" className="block text-sm font-medium text-gray-700">
           Usage Type
         </label>
-        <MultiSelectDropDown options={getUsageTypeDropdownOptions()} />
+        <MultiSelectDropDown name='usage' selectedValues={formData.usage}  options={getUsageTypeDropdownOptions()} onChange={handleChangeSelectedUsages} />
       </div>
       <button className="cursor-pointer flex mx-auto px-4 py-2 rounded-lg text-gray-700 border-1 border-gray-700" type="submit">
         Apply Filters

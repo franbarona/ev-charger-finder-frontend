@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import menuConfig from "../constants/menu-config"; // ajusta la ruta si es necesario
-import SearchBar from "./SearchBar";
 import { TbMapPinBolt } from "react-icons/tb";
 
 const NavLogo = () => {
@@ -43,9 +42,6 @@ const Navbar = () => {
     <div className="absolute shadow-2xl z-50 w-[90vw] md:w-[50vw] xl:w-[90vw] top-2 xl:top-0 mx-auto left-0 right-0 rounded-b-2xl xl:border-b-2 border-l-2 border-r-2 border-gray-300 xl:bg-[rgba(255,255,255,0.6)] xl:backdrop-blur-2xl">
       <nav className={`flex justify-between items-center xl:py-3 xl:px-10 `}>
         <NavLogo />
-        <div className="flex-1 xl:max-w-xl xl:mx-10">
-          <SearchBar />
-        </div>
         <NavLinks />
       </nav>
     </div>

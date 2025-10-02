@@ -17,8 +17,8 @@ const StaggeredDropDown: React.FC<IconActionButtonProps> = ({ children, isVisibl
             animate="open"
             exit="closed"
             variants={wrapperVariants}
-            style={{ originY: "top", translateY: "0%", translateX: "0%" }}
-            className="flex flex-col gap-2 p-2 rounded-lg shadow-xl absolute max-w-[80vw] w-300 bg-[rgba(255,255,255,0.9)] border-1 border-gray-300"
+            style={{ originY: "top", translateY: "40%" }}
+            className="flex flex-col gap-2 p-2 rounded-lg shadow-xl absolute max-w-[80vw] w-300 bg-[rgba(255,255,255,0.95)] border-1 border-gray-300 left-1/2 -translate-x-1/2 z-50"
           >
 
             {children}

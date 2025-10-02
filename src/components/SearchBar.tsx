@@ -2,22 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useAlert } from '../context/AlertContext';
 import { useMapPosition } from '../context/MapPositionContext';
 import { LuListFilter, LuSearch, LuX } from 'react-icons/lu';
-import { fetchChargingStations, fetchCoordinatesByQuery } from '../services/open-charge-map.service';
-import { useStations } from '../context/StationsContext';
-import { useLoading } from '../context/LoadingContext';
+import { fetchCoordinatesByQuery } from '../services/open-charge-map.service';
 import { useModal } from '../context/ModalContext';
+import type { Coordinates } from '../types/types';
+import { useStationsSearchFilters } from '../context/StationsSearchFiltersContext';
 
 interface SearchBarProps {
+  handleSearchByCoords: (coords: Coordinates) => void;
   initialQuery?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ handleSearchByCoords, initialQuery = '' }) => {
+  const { filtersLength } = useStationsSearchFilters();
   const [query, setQuery] = useState(initialQuery);
   const [loading, setLoading] = useState(false);
   const { setPosition } = useMapPosition();
   const { addAlert } = useAlert();
-  const { setStations } = useStations();
-  const { wrapPromise } = useLoading();
   const { isModalOpen, setIsModalOpen } = useModal();
 
   useEffect(() => {
@@ -32,8 +32,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
       const data = await fetchCoordinatesByQuery(query)
       if (data.length > 0) {
         const { lat, lon } = data[0];
-        setPosition({ lat: parseFloat(lat), lng: parseFloat(lon) });
-        handleSearchByCoordinatesFound({ lat: parseFloat(lat), lng: parseFloat(lon) }, query);
+        const newCoords = { lat: parseFloat(lat), lng: parseFloat(lon) };
+        setPosition(newCoords);
+        handleSearchByCoords(newCoords)
       } else {
         addAlert({ type: 'info', message: `No location found` });
       }
@@ -41,16 +42,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
       addAlert({ type: 'error', message: `Location searching error: ${error}` });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleSearchByCoordinatesFound = async (coords: { lat: number; lng: number }, searchInput?: string) => {
-    try {
-      const stations = await wrapPromise(fetchChargingStations(coords.lat, coords.lng));
-      setStations(stations);
-      addAlert({ type: 'success', message: `${stations?.length} charging stations found near ${searchInput}` });
-    } catch (error) {
-      addAlert({ type: 'error', message: `Error getting charging stations: ${error}` });
     }
   };
 
@@ -92,13 +83,21 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialQuery = '' }) => {
           onClick={() => setIsModalOpen(!isModalOpen)}
           className={`
             cursor-pointer text-gray-700 font-medium bg-white p-3 xl:py-1 xl:px-2 
-            hover:bg-emerald-700/90 hover:text-white rounded-r-xl
+            hover:bg-zinc-800 hover:text-white rounded-r-xl
             flex gap-2 justify-center items-center border-l-1 border-gray-300
             `}
         >
           <LuListFilter className='text-xl' />
           <span className='hidden xl:block'>Filters</span>
         </button>
+        {
+          filtersLength > 0 &&
+          <div className='absolute -right-2 -top-2 z-50 w-5 h-5 px-1 pb-1 pt-0.5 bg-green-700 rounded-full flex'>
+            <span className='m-auto text-white text-xs font-semibold'>
+              {filtersLength}
+            </span>
+          </div>
+        }
       </div>
     </form>
   );
