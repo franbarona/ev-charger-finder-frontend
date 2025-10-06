@@ -51,7 +51,13 @@ const mapUrlFilters = (filters?: StationsSearchFilters): string => {
   if (!filters) return '';
   let urlFilters = '';
   if (filters.usage) {
-    urlFilters += `&usageTypeId=${filters.usage}`
+    urlFilters += `&usageTypeId=${filters.usage}`;
+  }
+  if (filters.kwRange.min > 0) {
+    urlFilters += `&minpowerkw=${filters.kwRange.min}`;
+  }
+  if (filters.kwRange.max < 350) {
+    urlFilters += `&maxpowerkw=${filters.kwRange.max}`;
   }
   return urlFilters;
 }

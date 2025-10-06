@@ -9,6 +9,7 @@ import { LoadingProvider } from "./context/LoadingContext";
 import { ModalProvider } from "./context/ModalContext";
 import { StationsSearchFiltersProvider } from "./context/StationsSearchFiltersContext";
 import { MapZoomProvider } from "./context/MapZoomContext";
+import TestPage from "./pages/TestPage";
 
 function App () {
   return (
@@ -27,6 +28,7 @@ function App () {
                           <main className={`relative w-full h-full`}>
                             <Routes>
                               <Route path="/" element={<HomePage />} />
+                              <Route path="/test" element={<TestPage />} />
                             </Routes>
                             <footer className={`absolute flex bottom-4 right-0 text-[var(--color-text-secondary)] text-xs text-center whitespace-nowrap`}>
                               <Link to="https://www.franbarona.dev" target="_blank" rel="noopener noreferrer" className="hover:underline bg-gray-100/90 px-4 py-0.5">

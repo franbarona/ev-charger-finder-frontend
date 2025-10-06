@@ -20,7 +20,11 @@ const StationsSearchFiltersContext = createContext<StationsSearchFiltersContextT
 export const StationsSearchFiltersProvider = ({ children }: { children: ReactNode }) => {
   const [stationsSearchFilters, setStationsSearchFilters] = useState<StationsSearchFilters>(
     {
-      usage: []
+      usage: [],
+      kwRange: {
+        min: 0,
+        max: 350
+      }
     }
   );
 
@@ -48,6 +52,9 @@ export const useStationsSearchFilters = () => {
 const getFiltersLength = (filters: StationsSearchFilters): number => {
   let filtersLength = 0; 
   if (filters.usage.length > 0) {
+    filtersLength += 1;
+  }
+  if (filters.kwRange.min > 0 || filters.kwRange.max < 350 ) {
     filtersLength += 1;
   }
   return filtersLength;
