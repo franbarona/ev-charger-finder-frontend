@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { LuInfo, LuList } from "react-icons/lu";
 import {
   INITIAL_COORDS,
   MAX_LIMIT_STATION_TO_FECH,
