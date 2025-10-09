@@ -1,8 +1,11 @@
-import { useStations } from '../context/StationsContext';
+import type { ChargingStation } from '../types/types';
 import ChargingStationMarker from './ChargingStationMarker';
 
-const ChargingStationsMarkers: React.FC = () => {
-  const { stations } = useStations();
+interface ChargingStationsMarkersProps {
+  stations: ChargingStation[];
+}
+
+const ChargingStationsMarkers: React.FC<ChargingStationsMarkersProps> = ({stations}) => {
 
   return (
     <>

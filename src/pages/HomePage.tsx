@@ -1,48 +1,55 @@
 import { useEffect, useState } from "react";
-import ChargerStationList from "../components/ChargerStationList";
-import MapView from "../components/MapView";
-import type {
-  Coordinates,
-  LastSearchType,
-  StationsSearchFilters,
-} from "../types/types";
-import ButtonHideList from "../components/ButtonHideList";
+import { LuInfo, LuList } from "react-icons/lu";
 import {
   INITIAL_COORDS,
   MAX_LIMIT_STATION_TO_FECH,
   MIN_ZOOM_TO_SEARCH_IN_AREA,
 } from "../constants/constants";
-import { useStations } from "../context/StationsContext";
-import { useStationsSearchFilters } from "../context/StationsSearchFiltersContext";
-import { useMapZoom } from "../context/MapZoomContext";
-import { useLoading } from "../context/LoadingContext";
+import ChargerStationList from "../components/ChargerStationList";
+import MapView from "../components/MapView";
+import ButtonHideList from "../components/ButtonHideList";
 import SearchByBounds from "../components/SearchByBounds";
-import { LuList } from "react-icons/lu";
-import IconActionButton from "../components/ui/IconActionButton";
-import { useModal } from "../context/ModalContext";
-import StaggeredDropDown from "../components/ui/StaggeredDropDown";
 import FilterForm from "../components/FilterForm";
+import SearchBar from "../components/SearchBar";
+import Modal from "../components/ui/Modal";
+import AboutSection from "../components/sections/AboutSection";
+import { useModal } from "../context/ModalContext";
+import { useLoading } from "../context/LoadingContext";
+import { useAlert } from "../context/AlertContext";
+import { useAboutSection } from "../context/AboutSectionContext";
+import useStations from "../hooks/useStations";
+import useMapFilters from "../hooks/useMapFilters";
+import useMapZoom from "../hooks/useMapZoom";
+import useMapPosition from "../hooks/useMapPosition";
+import useMapBounds from "../hooks/useMapBounds";
 import {
   getDistanceInKm,
   fetchStationsInBounds,
   fetchStationsByCoords,
 } from "../services/open-charge-map.service";
-import { useMapPosition } from "../context/MapPositionContext";
-import { useBounds } from "../context/BoundContext";
-import { useAlert } from "../context/AlertContext";
-import SearchBar from "../components/SearchBar";
+import type {
+  Coordinates,
+  LastSearchType,
+  StationsSearchFilters,
+} from "../types/types";
+import MobileActions from "../components/MobileActions";
 
 const HomePage = () => {
   const { stations, setStations } = useStations();
   const { position, setPosition } = useMapPosition();
-  const { bounds } = useBounds();
-  const { stationsSearchFilters, setStationsSearchFilters } =
-    useStationsSearchFilters();
+  const {
+    isAboutSectionOpen,
+    openAboutSection,
+    closeAboutSection,
+    handleOverlayClickAboutSection,
+  } = useAboutSection();
+  const { bounds, setBounds } = useMapBounds();
+  const { filters, setFilters, numFiltersApplied } = useMapFilters();
   const [isListExpanded, setIsListExpanded] = useState(true);
-  const { isModalOpen, setIsModalOpen } = useModal();
+  const { isModalOpen, closeModal, handleOverlayClick } = useModal();
   const { isLoading } = useLoading();
   const { wrapPromise } = useLoading();
-  const { zoom } = useMapZoom();
+  const { zoom, setZoom } = useMapZoom();
   const { addAlert } = useAlert();
   const [mapCoords, setMapCoords] = useState<Coordinates>(INITIAL_COORDS);
   const [lastSearchType, setLastSeachType] = useState<LastSearchType>();
@@ -78,7 +85,7 @@ const HomePage = () => {
     setLastSeachType("coords");
     try {
       const newStations = await wrapPromise(
-        fetchStationsByCoords(coords, stationsSearchFilters)
+        fetchStationsByCoords(coords, filters)
       );
       setStations(newStations);
       addAlert({
@@ -98,7 +105,7 @@ const HomePage = () => {
     setLastSeachType("bounds");
     try {
       const newStations = await wrapPromise(
-        fetchStationsInBounds(bounds, stationsSearchFilters)
+        fetchStationsInBounds(bounds, filters)
       );
       setStations(newStations);
       setPosition(mapCoords); //¿ESTO HACE FALTA?
@@ -122,63 +129,67 @@ const HomePage = () => {
   };
 
   // UPDATE FILTERS
-  const handleOnChangeFilters = (
-    newStationsSearchFilters: StationsSearchFilters
-  ) => {
-    setStationsSearchFilters(newStationsSearchFilters);
-    console.log("stationsSearchFilters", newStationsSearchFilters);
-    setIsModalOpen(false);
-    if (lastSearchType === 'coords') handleSearchByCoords(position);
-    else if (lastSearchType === 'bounds') handleSearchInBounds();
+  const handleOnChangeFilters = (newFilters: StationsSearchFilters) => {
+    setFilters(newFilters);
+    closeModal();
   };
+
+  useEffect(() => {
+    if (lastSearchType === "coords") handleSearchByCoords(position);
+    else if (lastSearchType === "bounds") handleSearchInBounds();
+  }, [filters]);
 
   return (
     <>
       <div className="relative w-full h-full overflow-hidden">
-        <div className="absolute bottom-5 right-5 z-10">
-          <span>Lat: {position.lat} </span>
-          <span>Long: {position.lng} </span>
-        </div>
         {isLoading && (
-          <div className="absolute z-[1000] w-screen h-screen bg-[rgba(0,0,0,0.3)] backdrop-blur-sm">
-            <div className="absolute z-[1000] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="absolute z-100 w-screen h-screen bg-[rgba(0,0,0,0.3)] backdrop-blur-sm">
+            <div className="absolute z-100 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
             </div>
           </div>
         )}
-        {/* <div className="flex-1 xl:max-w-xl xl:mx-10"> */}
-        <div className="absolute top-3 w-[80vw] max-w-2xl z-50 left-1/2 -translate-x-1/2">
-          <SearchBar handleSearchByCoords={handleSearchByCoords} />
+        <div className="absolute top-3.5 w-[80vw] max-w-lg z-40 left-1/2 -translate-x-1/2">
+          <SearchBar
+            handleSearchByCoords={handleSearchByCoords}
+            setPosition={setPosition}
+            numFiltersApplied={numFiltersApplied}
+          />
         </div>
-        {/* </div> */}
         <SearchByBounds
           isDisabled={isSearchInBoundsDisabled}
           handleSearchByBounds={handleSearchInBounds}
         />
-        <MapView setMapCoords={setMapCoords} />
+        <MapView
+          stations={stations}
+          position={position}
+          setMapCoords={setMapCoords}
+          setZoom={setZoom}
+          setBounds={setBounds}
+        />
         {/* Normal screen */}
         {stations.length > 0 && (
           <div
-            className={`hidden xl:block
-              absolute top-20 z-[900] h-[calc(100%-6rem)] frosted-bg shadow-xl border-r-1 border-gray-300 rounded-r-2xl
+            className={`hidden lg:block
+              absolute top-20 z-40 h-[calc(100%-6rem)] frosted-bg shadow-xl border-r-1 border-gray-300 rounded-r-2xl
               transition-all duration-300 ease-in-out w-[32rem]  ${
                 isListExpanded ? " ml-0" : "-ml-[32rem]"
               }`}
           >
-            <ChargerStationList stations={stations} />
-            <div className="absolute bottom-1/8 -right-8">
+            <div className="absolute bottom-1/8 -right-9">
               <ButtonHideList
                 action={toggleList}
                 isSidebarExpanded={isListExpanded}
               />
             </div>
+            <ChargerStationList stations={stations} closeList={toggleList} />
           </div>
         )}
         {/* Mobile - Tablet screen */}
         {stations.length > 0 && (
           <div
-            className={`block xl:hidden
-            absolute top-0 z-[900] h-full frosted-bg  shadow-xl w-full
+            className={`block lg:hidden
+            absolute top-0 z-40 h-full frosted-bg  shadow-xl w-full
             transition-all duration-300 ease-in-out ${
               isListExpanded ? " mt-0" : "mt-[100vh]"
             }`}
@@ -186,21 +197,31 @@ const HomePage = () => {
             <ChargerStationList stations={stations} closeList={toggleList} />
           </div>
         )}
-
-        {/* Show list button on mobile */}
-        {stations.length > 0 && (
-          <div className="absolute bottom-10 right-3 xl:hidden shadow-2xl">
-            <IconActionButton icon={LuList} action={toggleList} />
-          </div>
-        )}
+        <MobileActions
+          stations={stations}
+          openAboutSection={openAboutSection}
+          toggleList={toggleList}
+        />
       </div>
 
-      <StaggeredDropDown isVisible={isModalOpen}>
+      <Modal
+        isVisible={isModalOpen}
+        handleClose={closeModal}
+        handleOverlayClick={handleOverlayClick}
+        title="Search Filter:"
+      >
         <FilterForm
           onChangeFilters={handleOnChangeFilters}
-          settedData={stationsSearchFilters}
+          settedData={filters}
         />
-      </StaggeredDropDown>
+      </Modal>
+      <Modal
+        isVisible={isAboutSectionOpen}
+        handleClose={closeAboutSection}
+        handleOverlayClick={handleOverlayClickAboutSection}
+      >
+        <AboutSection />
+      </Modal>
     </>
   );
 };

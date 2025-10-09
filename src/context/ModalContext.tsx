@@ -1,24 +1,33 @@
 import {
   createContext,
   useContext,
-  type Dispatch,
-  type SetStateAction,
+  type MouseEvent,
   useState,
-} from 'react';
-
+} from "react";
 
 interface ModalContextType {
   isModalOpen: boolean;
-  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+  openModal: () => void;
+  closeModal: () => void;
+  handleOverlayClick: (e: MouseEvent<HTMLDivElement>) => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+  const handleOverlayClick = (e: MouseEvent<HTMLDivElement>): void => {
+    if (e.target === e.currentTarget) {
+      closeModal();
+    }
+  };
 
   return (
-    <ModalContext.Provider value={{ isModalOpen, setIsModalOpen }}>
+    <ModalContext.Provider
+      value={{ isModalOpen, openModal, closeModal, handleOverlayClick }}
+    >
       {children}
     </ModalContext.Provider>
   );
@@ -27,7 +36,7 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
 export const useModal = () => {
   const context = useContext(ModalContext);
   if (!context) {
-    throw new Error("useMapPosition should be used inside MapPositionProvider");
+    throw new Error("useModal should be used inside MapPositionProvider");
   }
   return context;
 };

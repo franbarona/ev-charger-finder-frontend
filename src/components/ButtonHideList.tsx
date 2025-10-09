@@ -5,17 +5,22 @@ interface ButtonHideListProps {
   isSidebarExpanded?: boolean;
 }
 
-const ButtonHideList: React.FC<ButtonHideListProps> = ({ action, isSidebarExpanded }) => {
+const ButtonHideList: React.FC<ButtonHideListProps> = ({
+  action,
+  isSidebarExpanded,
+}) => {
   const arrowRotation = isSidebarExpanded ? "" : "rotate-180";
   return (
     <button
-      className={`cursor-pointer bg-emerald-700/95 border-2 border-gray-200
+      className={`cursor-pointer bg-emerald-700/95 border-y-2 border-r-2 border-gray-200
                 py-4 pl-1.5 pr-1 rounded-r-xl shadow-2xl text-2xl text-white`}
       onClick={action}
     >
-      <MdKeyboardArrowLeft className={`transition-all duration-600 easy-in-out ${arrowRotation}`} />
+      <MdKeyboardArrowLeft
+        className={`transition-all duration-600 easy-in-out ${arrowRotation}`}
+      />
     </button>
-  )
-}
+  );
+};
 
 export default ButtonHideList;

@@ -1,21 +1,20 @@
-import { MapContainer, TileLayer, ZoomControl, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import ChargingStationsMarkers from './ChargingStationsMarkers';
 import MapCenterUpdater from './MapCenterUpdater';
-import { useBounds } from '../context/BoundContext';
-import { useMapPosition } from '../context/MapPositionContext';
 import MyMapInitializer from './MapInitializer';
-import { useMapZoom } from '../context/MapZoomContext';
 import { ConditionalZoomControls } from './ConditionalZoomControls';
+import type { ChargingStation, Coordinates, MapBounds } from '../types/types';
 
 interface MapViewProps {
-  initialZoom?: number;
+  stations: ChargingStation[];
+  position: Coordinates;
   setMapCoords: (coords: { lat: number; lng: number }) => void;
+  setZoom: (zoom: number) => void;
+  setBounds: (bounds: MapBounds) => void;
+  initialZoom?: number;
 }
 
-const MapView: React.FC<MapViewProps> = ({ initialZoom = 13, setMapCoords }) => {
-  const { position } = useMapPosition();
-  const { setBounds } = useBounds();
-  const { setZoom } = useMapZoom();
+const MapView: React.FC<MapViewProps> = ({ stations, position, setMapCoords, setZoom, setBounds, initialZoom = 13 }) => {
 
   const MapEvents = () => {
     const map = useMapEvents({
@@ -50,9 +49,8 @@ const MapView: React.FC<MapViewProps> = ({ initialZoom = 13, setMapCoords }) => 
           url={`https://maps.geoapify.com/v1/tile/klokantech-basic/{z}/{x}/{y}.png?apiKey=${import.meta.env.VITE_GEOAPIFY_API_KEY}`}
         />
 
-        <MyMapInitializer />
-        <ChargingStationsMarkers />
-        {/* <ZoomControl position="topright" /> */}
+        <MyMapInitializer setBounds={setBounds} />
+        <ChargingStationsMarkers stations={stations} />
         <ConditionalZoomControls />
         <MapEvents />
       </MapContainer>

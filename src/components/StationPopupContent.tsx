@@ -13,8 +13,8 @@ interface StationPopupContentProps {
 const StationPopupContent: React.FC<StationPopupContentProps> = ({ station, closeAction }) => {
   return (
     <div className="p-2">
-      <div className='absolute justify-self-end'>
-        <IconActionButton icon={LuX} action={closeAction} iconSize={'text-base'} />
+      <div className='absolute right-2'>
+        <IconActionButton icon={LuX} action={closeAction} iconSize='lg' />
       </div>
       <div className="text-lg px-4 pb-4 pt-3 space-y-1 w-full">
         <h1 className="font-semibold mr-4">{station.AddressInfo.Title}</h1>

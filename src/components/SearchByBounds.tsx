@@ -10,7 +10,7 @@ const SearchByBounds: React.FC<SearchByBoundsProps> = ({ isDisabled = false, han
     <div className={`
           ${!isDisabled ? 'animate-fade-in' : 'animate-fade-out'}
           flex gap-2 justify-center items-center text-base absolute top-15
-          xl:top-20 left-1/2 -translate-x-1/2 bg-white border-1 border-gray-300
+          lg:top-20 left-1/2 -translate-x-1/2 bg-white border-1 border-gray-300
           rounded-full px-6 py-1 shadow-lg z-1 cursor-pointer text-gray-600
           `}
       onClick={handleSearchByBounds}

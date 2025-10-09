@@ -52,7 +52,7 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({ children }) => {
       {
         canScrollLeft &&
         <div className='absolute -left-5 top-1/2 -translate-y-1/2 z-10'>
-          <IconActionButton icon={LuChevronLeft} action={() => scroll('left')} iconSize='text-xl' bgClass='bg-gray-300/50' />
+          <IconActionButton icon={LuChevronLeft} action={() => scroll('left')} iconSize='lg' bgClass='bg-gray-300/50' />
         </div>
       }
 
@@ -68,7 +68,7 @@ const HorizontalScroll: React.FC<HorizontalScrollProps> = ({ children }) => {
       {
         canScrollRight &&
         <div className='absolute -right-5 top-1/2 -translate-y-1/2 z-10'>
-          <IconActionButton icon={LuChevronRight} action={() => scroll('right')} iconSize='text-xl' bgClass='bg-gray-300/50' />
+          <IconActionButton icon={LuChevronRight} action={() => scroll('right')} iconSize='lg' bgClass='bg-gray-300/50' />
         </div>
       }
     </div>

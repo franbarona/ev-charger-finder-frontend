@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
-import { useBounds } from '../context/BoundContext';
+import type { MapBounds } from '../types/types';
 
-const MyMapInitializer = () => {
+interface MapInitializerProps {
+  setBounds: (bounds: MapBounds) => void;
+}
+
+const MyMapInitializer: React.FC<MapInitializerProps> = ({setBounds}) => {
   const map = useMap();
-  const { setBounds } = useBounds();
 
   useEffect(() => {
     const bounds = map.getBounds();

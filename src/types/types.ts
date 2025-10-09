@@ -1,5 +1,16 @@
 export type AlertType = "success" | "error" | "info";
 export type LastSearchType = "coords" | "bounds";
+export type ButtonStyle = "primary" | "secondary" | "tertiary";
+export type Sizes = "normal" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
+
+export enum EnumSizesToNumber {
+  "normal" = 24,
+  "xl" = 28,
+  "2xl" = 30,
+  "3xl" = 40, 
+  "4xl" = 44, 
+  "5xl" = 48, 
+}
 
 export interface ChargingStationConnection {
   ID: number;
@@ -86,6 +97,7 @@ export interface Option {
 export interface StationsSearchFilters {
   usage: string[];
   kwRange: KwRange;
+  connections: string[];
 }
 
 export interface KwRange {

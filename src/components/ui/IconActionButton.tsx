@@ -10,7 +10,10 @@ const IconActionButton: React.FC<IconActionButtonProps> = ({icon: Icon, action, 
     <button
       type="button"
       onClick={action}
-      className={`cursor-pointer p-2 text-gray-700 font-semibold ${bgClass ? bgClass : 'bg-white'}  rounded-lg border-1 border-gray-300`}
+      className={
+        `cursor-pointer p-2 text-gray-700 font-semibold rounded-lg border-1 border-gray-300
+        ${bgClass ? bgClass : 'bg-white'} hover:text-black
+        `}
     >
       <Icon className={`${iconSize ? iconSize: 'text-2xl'}`} />
     </button>
