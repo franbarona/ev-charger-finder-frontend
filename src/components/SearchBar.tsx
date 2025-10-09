@@ -86,13 +86,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
           disabled={loading}
           onClick={openModal}
           className={`
-            cursor-pointer text-gray-700 font-medium bg-white px-2 py-1.5 
-            hover:bg-zinc-800 hover:text-white rounded-r-xl
-            flex gap-2 justify-center items-center border-l-1 border-gray-300
+            cursor-pointer text-gray-700 font-medium bg-white px-2 py-0.5 
+            hover:bg-zinc-800/85 hover:text-white rounded-r-xl
+            flex gap-2 justify-center items-center border-l-1 border-gray-300 transition duration-300 ease-in-out
             `}
         >
           <LuListFilter className="text-xl" />
-          <span className="hidden xl:block text-sm">Filters</span>
+          <span className="hidden xl:block font-semibold">Filters</span>
           {numFiltersApplied > 0 && (
             <NotificationBubble number={numFiltersApplied} />
           )}

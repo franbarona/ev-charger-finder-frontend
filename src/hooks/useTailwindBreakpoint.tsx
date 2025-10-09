@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// Define tus breakpoints de Tailwind (los valores por defecto)
 const breakpoints = {
   sm: 640,
   md: 768,
@@ -9,28 +8,30 @@ const breakpoints = {
   '2xl': 1536,
 };
 
-export const useTailwindBreakpoint = (breakpointKey: keyof typeof breakpoints): boolean => {
+const useTailwindBreakpoint = (breakpointKey: keyof typeof breakpoints): boolean => {
   const [matches, setMatches] = useState(false);
 
   useEffect(() => {
-    // Obtiene el ancho del breakpoint
+    // Obtain breakpoint width
     const minWidth = breakpoints[breakpointKey];
     
-    // Crea la media query
+    // Create media query
     const mediaQuery = `(min-width: ${minWidth}px)`;
     const mql = window.matchMedia(mediaQuery);
 
     const updateMatches = () => setMatches(mql.matches);
 
-    // Ejecuta la verificación inicial
+    // Exec inicial check
     updateMatches();
 
-    // Escucha los cambios
+    // Event listener
     mql.addEventListener('change', updateMatches);
 
-    // Limpia el listener
+    // Clean listener
     return () => mql.removeEventListener('change', updateMatches);
   }, [breakpointKey]);
 
   return matches;
 };
+
+export default useTailwindBreakpoint;
