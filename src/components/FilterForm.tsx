@@ -112,8 +112,16 @@ const FilterForm: React.FC<FilterFormProps> = ({
             <SlEnergy className="text-gray-900/70 text-3xl" />
           </div>
           <div className="flex justify-between text-sm text-gray-600">
-            <span>Min: {formData.kwRange.min}kW</span>
-            <span>Max: {formData.kwRange.max}kW</span>
+            <div className="flex flex-nowrap gap-1 items-baseline">
+              <span>Min:</span>
+              <span className="font-semibold text-lg lg:text-xl tracking-tighter text-emerald-600">{formData.kwRange.min}</span>
+              <span className="text-xs">kW</span>
+            </div>
+            <div className="flex flex-nowrap gap-1 items-baseline">
+              <span>Max:</span>
+              <span className="font-semibold text-lg lg:text-xl tracking-tighter text-emerald-600">{formData.kwRange.max}</span>
+              <span className="text-xs">kW</span>
+            </div>
           </div>
         </div>
         <div className="flex justify-end items-center mx-auto gap-3">

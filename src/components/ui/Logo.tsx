@@ -1,4 +1,5 @@
-import { EnumSizesToNumber, type Sizes } from "../../types/types";
+import { FaBolt } from "react-icons/fa6";
+import { type Sizes } from "../../types/types";
 
 interface LogoProps {
   size: Sizes;
@@ -6,13 +7,18 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ size }) => {
   return (
-    <div className={`flex justify-start items-center font-medium font-outfit gap-1 ${size ? `text-${size}` : 'text-2xl'}`}>
-      {/* <TbMapPinBolt className={`text-emerald-700 text-shadow-sm  ${size ? `text-4xl` : 'text-3xl'}`} /> */}
-      <img src="/EV_finder_logo.svg" alt="" width={EnumSizesToNumber[size]} />
-      <span className="tracking-tight text-shadow-xs">Charging</span>
-      {/* <span className="tracking-tight text-shadow-sm text-emerald-700 text-3xl">
-        ·
-      </span> */}
+    <div
+      className={`flex justify-start items-center font-semibold font-outfit gap-0 ${
+        size === "big" ? `text-4xl` : "text-2xl"
+      }`}
+    >
+      <span className="tracking-tighter font-extrabold">V</span>
+      <div className="p-0.5 bg-emerald-700 rounded-full">
+        <FaBolt
+          className={`text-white  ${size === "big" ? `text-2xl` : "text-base"}`}
+        />
+      </div>
+      <span className="tracking-tighter font-extrabold">LTIFY</span>
     </div>
   );
 };

@@ -42,14 +42,14 @@ const DoubleRangeSlider: React.FC<DoubleRangeSliderProps> = ({
     [min, max]
   );
 
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
+  const updateValue = useCallback(
+    (clientX: number) => {
       if (!sliderRef.current) return;
 
       const rect = sliderRef.current.getBoundingClientRect();
       const percentage = Math.max(
         0,
-        Math.min(100, ((e.clientX - rect.left) / rect.width) * 100)
+        Math.min(100, ((clientX - rect.left) / rect.width) * 100)
       );
       const value = Math.round((percentage / 100) * (max - min) + min);
       const steppedValue = Math.round(value / step) * step;
@@ -71,7 +71,23 @@ const DoubleRangeSlider: React.FC<DoubleRangeSliderProps> = ({
     [isDraggingMin, isDraggingMax, minValue, maxValue, min, max, step, onChange]
   );
 
-  const handleMouseUp = useCallback(() => {
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      updateValue(e.clientX);
+    },
+    [updateValue]
+  );
+
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        updateValue(e.touches[0].clientX);
+      }
+    },
+    [updateValue]
+  );
+
+  const handleEnd = useCallback(() => {
     setIsDraggingMin(false);
     setIsDraggingMax(false);
   }, []);
@@ -79,13 +95,17 @@ const DoubleRangeSlider: React.FC<DoubleRangeSliderProps> = ({
   useEffect(() => {
     if (isDraggingMin || isDraggingMax) {
       document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("mouseup", handleEnd);
+      document.addEventListener("touchmove", handleTouchMove);
+      document.addEventListener("touchend", handleEnd);
       return () => {
         document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
+        document.removeEventListener("mouseup", handleEnd);
+        document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("touchend", handleEnd);
       };
     }
-  }, [isDraggingMin, isDraggingMax, handleMouseMove, handleMouseUp]);
+  }, [isDraggingMin, isDraggingMax, handleMouseMove, handleTouchMove, handleEnd]);
 
   const minPercentage = getPercentage(minValue);
   const maxPercentage = getPercentage(maxValue);
@@ -115,6 +135,7 @@ const DoubleRangeSlider: React.FC<DoubleRangeSliderProps> = ({
               isDraggingMin ? "scale-125 cursor-grabbing" : "hover:scale-110"
             }`}
             onMouseDown={() => setIsDraggingMin(true)}
+            onTouchStart={() => setIsDraggingMin(true)}
             role="slider"
             aria-valuenow={minValue}
             aria-valuemin={min}
@@ -146,6 +167,7 @@ const DoubleRangeSlider: React.FC<DoubleRangeSliderProps> = ({
               isDraggingMax ? "scale-125 cursor-grabbing" : "hover:scale-110"
             }`}
             onMouseDown={() => setIsDraggingMax(true)}
+            onTouchStart={() => setIsDraggingMax(true)}
             role="slider"
             aria-valuenow={maxValue}
             aria-valuemin={min}
@@ -167,6 +189,14 @@ const DoubleRangeSlider: React.FC<DoubleRangeSliderProps> = ({
           )}
         </div>
       </div>
+
+      {/* Demo display */}
+      {/* <div className="mt-8 text-center">
+        <p className="text-gray-600 mb-2">Rango seleccionado:</p>
+        <p className="text-2xl font-bold text-emerald-600">
+          {minValue} - {maxValue}
+        </p>
+      </div> */}
     </div>
   );
 };

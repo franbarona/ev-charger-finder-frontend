@@ -1,7 +1,7 @@
 export type AlertType = "success" | "error" | "info";
 export type LastSearchType = "coords" | "bounds";
 export type ButtonStyle = "primary" | "secondary" | "tertiary";
-export type Sizes = "normal" | "xl" | "2xl" | "3xl" | "4xl" | "5xl";
+export type Sizes = "normal" | "big";
 
 export enum EnumSizesToNumber {
   "normal" = 24,

@@ -7,7 +7,7 @@ export default function AboutSection() {
     <div className="max-w-4xl mx-auto px-2 lg:px-8 space-y-10">
       {/* Header */}
       <div className="flex flex-col items-center justify-center lg:mt-10 space-y-2">
-        <Logo size="5xl" />
+        <Logo size="big" />
         <p className="text-gray-600">EV Charging Station Finder</p>
       </div>
 
@@ -33,9 +33,7 @@ export default function AboutSection() {
         </h3>
         <p className="text-gray-700 pl-2">
           This is a personal project created for educational purposes and is
-          non-commercial. It was developed to learn and demonstrate modern web
-          development techniques and to provide a useful tool for the EV
-          community.
+          non-commercial.
         </p>
       </div>
 
