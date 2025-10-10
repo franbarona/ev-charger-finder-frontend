@@ -7,10 +7,13 @@
 <metadata>
 Created by potrace 1.10, written by Peter Selinger 2001-2011
 </metadata>
-<g transform="translate(0.000000,37.000000) scale(0.100000,-0.100000)"
-fill="#007a55" stroke="none">
-<path d="M141 303 c-124 -65 -93 -242 45 -259 73 -9 141 46 150 122 13 104
--103 186 -195 137z m119 -20 c-1 -10 -7 -29 -15 -43 -20 -35 -19 -38 12 -42
+<g transform="translate(0.000000,37.000000) scale(0.100000,-0.100000)">
+<!-- Círculo exterior en verde -->
+<path fill="#007a55" stroke="none" d="M141 303 c-124 -65 -93 -242 45 -259 73 -9 141 46 150 122 13 104
+-103 186 -195 137z"/>
+
+<!-- Figura central en negro -->
+<path fill="#fff" stroke="none" d="M260 283 c-1 -10 -7 -29 -15 -43 -20 -35 -19 -38 12 -42
 15 -2 29 -10 30 -18 2 -16 -106 -113 -132 -118 -19 -4 -19 25 0 58 20 35 19
 38 -12 42 -45 5 -36 30 30 86 65 55 87 64 87 35z"/>
 </g>
