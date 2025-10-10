@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   getOperatorData,
   getStationStatus,
@@ -21,9 +21,47 @@ const ChargerStationList: React.FC<ChargerStationListProps> = ({
   closeList,
 }) => {
   const [expanded, setExpanded] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const preventZoom = (e: TouchEvent) => {
+      // Prevent pinch-to-zoom
+      if (e.touches.length > 1) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    const preventWheel = (e: WheelEvent) => {
+      // Prevent zoom ctrl + scroll in desktop
+      if (e.ctrlKey) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('touchstart', preventZoom, { passive: false });
+      container.addEventListener('touchmove', preventZoom, { passive: false });
+      container.addEventListener('wheel', preventWheel, { passive: false });
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('touchstart', preventZoom);
+        container.removeEventListener('touchmove', preventZoom);
+        container.removeEventListener('wheel', preventWheel);
+      }
+    };
+  }, []);
 
   return (
-    <div className="rounded-r-2xl overflow-hidden h-full flex flex-col ">
+    <div 
+      ref={containerRef}
+      className="rounded-r-2xl overflow-hidden h-full flex flex-col"
+      style={{ touchAction: 'pan-y' }}
+    >
       <div className="sticky top-0 p-2 flex justify-between items-end border-b-1 border-gray-300">
         <div className="px-4 py-1">
           <span className="font-medium text-lg xl:text-2xl text-gray-700">
