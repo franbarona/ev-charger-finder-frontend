@@ -65,7 +65,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <input
           type="text"
           placeholder="Search name of city, town or address..."
-          className="w-full outline-none bg-transparent text-gray-600 font-medium text-sm xl:text-base"
+          className="w-full outline-none bg-transparent text-gray-600 font-medium text-base"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
